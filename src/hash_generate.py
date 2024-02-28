@@ -2,6 +2,7 @@ import os
 import csv
 import hashlib
 
+
 def calcular_hashes(archivo):
     sha1 = hashlib.sha1()
     sha256 = hashlib.sha256()
@@ -26,10 +27,4 @@ def generar_csv(directorio, archivo_csv):
                 writer.writerow([ruta_relativa, sha1, sha256])
 
 
-# Directorio que deseas analizar
-directorio = "C:/Users/joaqu/Desktop/Rol"
-# Nombre del archivo CSV a generar
-archivo_csv = 'hashes.csv'
 
-# Llamar a la función para generar el CSV
-generar_csv(directorio, archivo_csv)

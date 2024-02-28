@@ -29,9 +29,5 @@ def file_indexer(directorio, archivo_csv):
 
 
 
-# Directorio que deseas verificar
-directorio = "C:/Users/joaqu/Desktop/Rol"
-# Ruta al archivo CSV generado anteriormente
-archivo_csv = "C:/Users/joaqu/Desktop/Uni/SSII/Repo/light-hids/hashes.csv"
 
 
