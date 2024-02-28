@@ -16,7 +16,11 @@ def calcular_hashes(archivo):
     return sha1.hexdigest(), sha256.hexdigest()
 
 def generar_csv(directorio, archivo_csv):
-    with open(archivo_csv, 'w', newline='', encoding='utf-8') as f:  # Especificar el encoding como utf-8
+    directorio_actual = os.path.dirname(os.path.abspath(__file__))
+    directorio_superior = os.path.abspath(os.path.join(directorio_actual, os.pardir))
+    ruta_csv = os.path.join(directorio_superior, archivo_csv)
+
+    with open(ruta_csv, 'w', newline='', encoding='utf-8') as f:  # Especificar el encoding como utf-8
         writer = csv.writer(f)
         writer.writerow(['Archivo', 'SHA-1', 'SHA-256'])
         for ruta, _, archivos in os.walk(directorio):
@@ -27,4 +31,10 @@ def generar_csv(directorio, archivo_csv):
                 writer.writerow([ruta_relativa, sha1, sha256])
 
 
+# Directorio que deseas analizar
+#directorio = "C:/Users/joaqu/Desktop/Rol"
+# Nombre del archivo CSV a generar
+#archivo_csv = 'hashes.csv'
 
+# Llamar a la función para generar el CSV
+#generar_csv(directorio, archivo_csv)
