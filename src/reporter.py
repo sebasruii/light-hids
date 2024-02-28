@@ -48,6 +48,6 @@ def create_gui(start_date, end_date, log_file):
 
 # Example usage:
 start_date = datetime.strptime("2024-01-01", "%Y-%m-%d")
-end_date = datetime.strptime("2024-02-23", "%Y-%m-%d")
+end_date = datetime.strptime("2024-02-29", "%Y-%m-%d")
 log_file = "integrity_log.txt"
 create_gui(start_date, end_date, log_file)

@@ -1,10 +1,10 @@
 import os
 import csv
 import hashlib
-import logger, hash_generate, integrity_verifier
+import logger, hash_generate, integrity_verifier, backup
 
 
-def file_indexer(directorio, archivo_csv):
+def file_indexer(directorio, archivo_csv, backup_directory):
     archivos_csv = []
     nombres = []
     with open(archivo_csv, 'r', newline='', encoding='utf-8') as f:  # Abrir con UTF-8
@@ -24,9 +24,10 @@ def file_indexer(directorio, archivo_csv):
                     writer = csv.writer(f)
                     sha1, sha256 = hash_generate.calcular_hashes(ruta_completa)
                     writer.writerow([ruta_relativa, sha1, sha256])
+                    backup.backup_file(ruta_completa, backup_directory)
                 else: 
                     index=nombres.index(ruta_relativa)
-                    integrity_verifier.verificar_integridad(ruta_completa,archivos_csv[index])
+                    integrity_verifier.verificar_integridad(ruta_completa,archivos_csv[index], backup_directory , directorio)
 
             
 
