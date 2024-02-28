@@ -1,6 +1,7 @@
 import hash_generate
 import os
 import indexer
+import backup
 
 
 def verificar_existencia_archivo_superior():
@@ -21,11 +22,13 @@ def obtener_ruta_relativa_csv(archivo_csv):
 
 
 def main():
-    directorio = "/home/zebax/EjercicioRSI"
+    directorio = "C:/Users/joaqu\Desktop/Rol"
+    directorio_backup="C:/Users/joaqu/Desktop/Uni/SSII/Repo/light-hids"
+    backup.backup_and_protect_files(directorio,directorio_backup)
     if not verificar_existencia_archivo_superior():
         hash_generate.generar_csv(directorio,"hashes.csv")
 
-    hashes_csv = "/home/zebax/projects/light-hids/hashes.csv"
+    hashes_csv = "C:/Users/joaqu/Desktop/Uni/SSII/Repo/light-hids/hashes.csv"
     indexer.file_indexer(directorio,hashes_csv)
 
 
