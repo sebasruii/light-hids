@@ -21,15 +21,16 @@ def obtener_ruta_relativa_csv(archivo_csv):
 
 
 def main():
-    directorio = "C:/Users/joaqu/Desktop/Rol"
+    directorio = "/home/zebax/EjercicioRSI"
     if not verificar_existencia_archivo_superior():
         hash_generate.generar_csv(directorio,"hashes.csv")
 
-    hashes_csv = obtener_ruta_relativa_csv("hashes.csv")
+    hashes_csv = "/home/zebax/projects/light-hids/hashes.csv"
     indexer.file_indexer(directorio,hashes_csv)
 
 
 if __name__ == "__main__":
     main()
+
 
 
