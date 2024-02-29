@@ -5,6 +5,7 @@ import os
 import indexer
 import backup
 import sys
+import time
 
 def verificar_existencia_archivo_superior(ruta_csv_superior):
     if os.path.exists(ruta_csv_superior):
@@ -18,11 +19,21 @@ def obtener_ruta_relativa_csv(archivo_csv):
     ruta_csv = os.path.join(directorio_superior, archivo_csv)
     return os.path.relpath(ruta_csv, directorio_actual)
 
-def execute_main(directorio, directorio_backup, hashes_csv):
+def execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit):
     backup.backup_and_protect_files(directorio, directorio_backup)
     if not verificar_existencia_archivo_superior(hashes_csv):
         hash_generate.generar_csv(directorio, hashes_csv)
     indexer.file_indexer(directorio, hashes_csv, directorio_backup)
+    
+    # Calculate the delay based on the selected periodicity
+    if periodicity_unit == "Minutes":
+        delay = periodicity_value * 60
+    else:
+        delay = periodicity_value * 60 * 60 * 24
+
+    # Wait for the specified delay and then rerun the program
+    time.sleep(delay)
+    execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit)
 
 def browse_directory(entry):
     directory = filedialog.askdirectory()
@@ -53,8 +64,15 @@ def create_gui():
     hashes_csv_entry.grid(row=2, column=1, padx=5, pady=5)
     tk.Button(root, text="Browse", command=lambda: browse_file(hashes_csv_entry)).grid(row=2, column=2)
 
-    execute_button = tk.Button(root, text="Execute", command=lambda: execute_main(directorio_entry.get(), directorio_backup_entry.get(), hashes_csv_entry.get()))
-    execute_button.grid(row=3, column=1, pady=10)
+    tk.Label(root, text="Periodicity:").grid(row=3, column=0, sticky="w")
+    periodicity_entry = tk.Entry(root)
+    periodicity_entry.grid(row=3, column=1, padx=5, pady=5)
+    periodicity_unit = tk.StringVar(root)
+    periodicity_unit.set("Minutes")
+    tk.OptionMenu(root, periodicity_unit, "Minutes", "Days").grid(row=3, column=2)
+
+    execute_button = tk.Button(root, text="Execute", command=lambda: execute_main(directorio_entry.get(), directorio_backup_entry.get(), hashes_csv_entry.get(), int(periodicity_entry.get()), periodicity_unit.get()))
+    execute_button.grid(row=4, column=1, pady=10)
 
     root.mainloop()
 
