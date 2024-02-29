@@ -6,6 +6,7 @@ import indexer
 import backup
 import sys
 import time
+import reporter
 
 def verificar_existencia_archivo_superior(ruta_csv_superior):
     if os.path.exists(ruta_csv_superior):
@@ -33,6 +34,7 @@ def execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, p
 
     # Wait for the specified delay and then rerun the program
     time.sleep(delay)
+    reporter.ReportManager
     execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit)
 
 def browse_directory(entry):
