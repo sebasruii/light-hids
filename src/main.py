@@ -7,6 +7,7 @@ import backup
 import sys
 import time
 import reporter
+from datetime import datetime, timedelta
 
 def verificar_existencia_archivo_superior(ruta_csv_superior):
     if os.path.exists(ruta_csv_superior):
@@ -20,7 +21,7 @@ def obtener_ruta_relativa_csv(archivo_csv):
     ruta_csv = os.path.join(directorio_superior, archivo_csv)
     return os.path.relpath(ruta_csv, directorio_actual)
 
-def execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit):
+def execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit, report_save_path, runs=1):
     backup.backup_and_protect_files(directorio, directorio_backup)
     if not verificar_existencia_archivo_superior(hashes_csv):
         hash_generate.generar_csv(directorio, hashes_csv)
@@ -34,8 +35,9 @@ def execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, p
 
     # Wait for the specified delay and then rerun the program
     time.sleep(delay)
-    reporter.ReportManager
-    execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit)
+    if runs % 30 == 0:
+        reporter.generate_report(report_save_path, datetime.now()-timedelta(days=30), datetime.now())
+    execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit, report_save_path, runs + 1)
 
 def browse_directory(entry):
     directory = filedialog.askdirectory()
@@ -73,8 +75,13 @@ def create_gui():
     periodicity_unit.set("Minutes")
     tk.OptionMenu(root, periodicity_unit, "Minutes", "Days").grid(row=3, column=2)
 
-    execute_button = tk.Button(root, text="Execute", command=lambda: execute_main(directorio_entry.get(), directorio_backup_entry.get(), hashes_csv_entry.get(), int(periodicity_entry.get()), periodicity_unit.get()))
-    execute_button.grid(row=4, column=1, pady=10)
+    tk.Label(root, text="Report Save Path:").grid(row=4, column=0, sticky="w")
+    report_save_path_entry = tk.Entry(root)
+    report_save_path_entry.grid(row=4, column=1, padx=5, pady=5)
+    tk.Button(root, text="Browse", command=lambda: browse_directory(report_save_path_entry)).grid(row=4, column=2)
+
+    execute_button = tk.Button(root, text="Execute", command=lambda: execute_main(directorio_entry.get(), directorio_backup_entry.get(), hashes_csv_entry.get(), int(periodicity_entry.get()), periodicity_unit.get(), report_save_path_entry.get()))
+    execute_button.grid(row=5, column=1, pady=10)
 
     root.mainloop()
 
