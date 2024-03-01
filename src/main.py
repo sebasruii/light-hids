@@ -27,16 +27,29 @@ def execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, p
         hash_generate.generar_csv(directorio, hashes_csv)
     indexer.file_indexer(directorio, hashes_csv, directorio_backup)
     
-    # Calculate the delay based on the selected periodicity
+    # Calculate the delay based on the selected periodicity unit
     if periodicity_unit == "Minutes":
         delay = periodicity_value * 60
-    else:
+    elif periodicity_unit == "Hours":
+        delay = periodicity_value * 60 * 60
+    elif periodicity_unit == "Days":
         delay = periodicity_value * 60 * 60 * 24
-
+    elif periodicity_unit == "Seconds":
+        delay = periodicity_value
+    else:
+        print("Invalid periodicity unit. Please select one of: Minutes, Hours, Days, or Seconds.")
+        return
+    
     # Wait for the specified delay and then rerun the program
     time.sleep(delay)
-    if runs % 30 == 0:
-        reporter.generate_report(report_save_path, datetime.now()-timedelta(days=30), datetime.now())
+    if runs % 30 == 0 and periodicity_unit == 'Days':
+        reporter.generate_report(report_save_path, datetime.now()-timedelta(days=30 * periodicity_value), datetime.now())
+    elif runs % 30 == 0 and periodicity_unit == 'Seconds':
+        reporter.generate_report(report_save_path, datetime.now()-timedelta(seconds=30 * periodicity_value), datetime.now())
+    elif runs % 30 == 0 and periodicity_unit == 'Minutes':
+        reporter.generate_report(report_save_path, datetime.now()-timedelta(minutes=30 * periodicity_value), datetime.now())
+    elif runs % 30 == 0 and periodicity_unit == 'Hours':
+        reporter.generate_report(report_save_path, datetime.now()-timedelta(hours=30 * periodicity_value), datetime.now())
     execute_main(directorio, directorio_backup, hashes_csv, periodicity_value, periodicity_unit, report_save_path, runs + 1)
 
 def browse_directory(entry):
@@ -73,7 +86,7 @@ def create_gui():
     periodicity_entry.grid(row=3, column=1, padx=5, pady=5)
     periodicity_unit = tk.StringVar(root)
     periodicity_unit.set("Minutes")
-    tk.OptionMenu(root, periodicity_unit, "Minutes", "Days").grid(row=3, column=2)
+    tk.OptionMenu(root, periodicity_unit, "Minutes", "Hours", "Days", "Seconds").grid(row=3, column=2)
 
     tk.Label(root, text="Report Save Path:").grid(row=4, column=0, sticky="w")
     report_save_path_entry = tk.Entry(root)
